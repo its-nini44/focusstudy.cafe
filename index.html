@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Kitchen</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 🎵 YOUR REPEATING BACKGROUND AUDIO ASSET -->
+    <audio id="ambient-sound" src="focus.mp3" loop></audio>
+
+    <!-- 🌐 TOP BAR NAVIGATION WIDGETS -->
+    <div id="top-ui-container">
+        <div id="game-widgets" class="hidden">
+            <div class="ui-widget">👥 <span id="online-count">0</span> Active Chefs</div>
+            <div class="ui-widget" id="total-study-widget">⏱️ Total Focused: <span id="total-hours">0.0</span> hrs</div>
+        </div>
+    </div>
+
+    <!-- 🎬 SCREEN 1: GAME START TITLE SCREEN -->
+    <div id="start-screen">
+        <div class="start-card" id="intro-card">
+            <p style="font-size: 1.5rem; margin: 0; font-weight: bold; color: #d9a044; font-family: 'Courier New', monospace;">Welcome to Focus Kitchen!</p>
+            <button id="begin-btn" style="font-size: 1.5rem; padding: 20px 40px;">Press to Begin</button>
+        </div>
+    </div>
+
+    <!-- ⏱️ SCREEN 2: MAIN STUDY TIMER APP SCREEN (Hidden at start) -->
+    <div id="app-screen" class="hidden">
+        <div class="container">
+            <h1>Focus Kitchen</h1>
+            <p>Choose a dish to cook while you study!</p>
+
+            <p>Select your recipe to cook:</p>
+            <div class="food-menu">
+                <!-- 1. Chai Card (15 Mins) - Shortest (Default Selected) -->
+                <div class="food-card selected" data-mins="15" data-name="Masala Chai">
+                    <img src="Chai.png" alt="Chai" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
+                    <p>Masala Chai<br>(15 Mins)</p>
+                </div>
+                <!-- 2. Idli Card (30 Mins) -->
+                <div class="food-card" data-mins="30" data-name="Soft Idli">
+                    <img src="Idli.jpeg" alt="Idli" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                    <p>Idli<br>(30 Mins)</p>
+                </div>
+                <!-- 3. Naan Card (45 Mins) -->
+                <div class="food-card" data-mins="45" data-name="Garlic Naan">
+                    <img src="Naan.jpg" alt="Naan" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                    <p>Garlic Naan<br>(45 Mins)</p>
+                </div>
+                <!-- 4. Dosa Card (50 Mins) -->
+                <div class="food-card" data-mins="50" data-name="Masala Dosa">
+                    <img src="Dosa.jpg" alt="Dosa" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                    <p>Masala Dosa<br>(50 Mins)</p>
+                </div>
+               <!-- 5. Sweets Card (60 Mins) -->
+                <div class="food-card" data-mins="60" data-name="Gulab Jamun">
+                    <img src="Sweets.jpg" alt="Sweets" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                    <p>Sweets<br>(60 Mins)</p>
+                </div>
+                <!-- 6. Real Samosa Card (75 Mins) -->
+                <div class="food-card" data-mins="75" data-name="Crispy Samosa">
+                    <img src="samosa.jpg" alt="Samosa" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
+                    <p>Samosa<br>(75 Mins)</p>
+                </div>
+                 <!-- 7. Paneer Card (90 Mins) -->
+                <div class="food-card" data-mins="90" data-name="Palak Paneer">
+                    <img src="Paneer.jpg" alt="Paneer" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                    <p>Palak Paneer<br>(90 Mins)</p>
+                </div>
+                <!-- 8. Biryani Card (120 Mins) - Longest -->
+                <div class="food-card" data-mins="120" data-name="Royal Biryani">
+                    <img src="Biryani.png" alt="Biryani" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                    <p>Biryani<br>(120 Mins)</p>
+                </div>
+            </div>
+
+            <!-- Timer UI Display -->
+            <div id="timer-display">00:00:00</div>
+            <div id="progress-display">0% Cooked</div>
+
+            <!-- 🔊 VOLUME CONTROL SLIDER -->
+            <div class="volume-container">
+                <span style="font-size: 0.9rem; font-weight: bold; margin-right: 5px;">🔊 Vol:</span>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+            </div>
+
+            <br><br>
+            <!-- 🎮 CONTROL BUTTONS CONTAINER -->
+            <div class="control-buttons">
+                <button id="start-btn">Start Cooking & Studying</button>
+                <!-- Added Pause/Resume Button (Starts hidden via CSS class) -->
+                <button id="pause-btn" class="hidden-control">⏸️ Pause Timer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🏆 SCREEN 3: CINEMATIC REWARD ENDING MODAL -->
+    <div id="ending-screen" class="hidden-modal">
+        <div class="end-card-box">
+            <img src="Victory2.jpg" alt="Victory Banner" style="width: 100%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 12px;">
+            <h2 style="font-size: 1.1rem; margin: 5px 0; color: #2c3e50;">You completed your session!</h2>
+            <p id="session-summary-text">You have successfully completed your study blocks!</p>
+            
+            <div class="stat-bubble">
+                <small>Session Credit:</small>
+                <div id="added-time-text">+15 Mins Logged</div>
+            </div>
+            <button id="close-end-btn">Continue Cooking 🍳</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

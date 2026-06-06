@@ -1,0 +1,122 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-image: url('focus.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+#top-ui-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10000;
+}
+
+#game-widgets {
+    display: flex;
+    gap: 15px;
+}
+
+.ui-widget {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    border: 2px solid #ffb142;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+
+#total-study-widget {
+    border-color: #9b59b6;
+}
+
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#timer-display { font-size: 2.5rem; font-weight: bold; margin: 5px 0; color: #d63031; }
+#progress-display { font-size: 1.3rem; font-weight: bold; color: #27ae60; margin-bottom: 10px; }
+
+/* 🎮 BUTTON STYLING CONFIGS */
+.control-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+button { background-color: #ffb142; border: none; padding: 12px 24px; font-size: 1rem; font-weight: bold; cursor: pointer; border-radius: 5px; transition: background-color 0.2s; }
+button:hover { background-color: #cc8e35; }
+
+/* Dynamic Style color shift for Pause Button */
+#pause-btn {
+    background-color: #74b9ff;
+}
+#pause-btn:hover {
+    background-color: #0984e3;
+    color: white;
+}
+
+.hidden-control {
+    display: none !important;
+}
+
+.volume-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0 5px 0;
+    background: #f1f2f6;
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: inline-flex;
+    border: 2px solid #ced6e0;
+}
+
+#volume-slider { cursor: pointer; accent-color: #ffb142; width: 100px; }
+.food-menu { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 15px 0; max-width: 580px; }
+.food-card { background: #f1f2f6; border: 3px solid #ced6e0; border-radius: 8px; padding: 8px; cursor: pointer; width: 110px; text-align: center;}
+.food-card img { display: block; margin: 0 auto 5px auto; }
+.food-card.selected { border-color: #ffb142; background: #ffeaa7; box-shadow: 0 0 10px rgba(255, 177, 66, 0.5); }
+#start-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.start-card { text-align: center; background: rgba(255, 255, 255, 0.85); padding: 30px 50px; border-radius: 15px; border: 4px solid #e17055; margin-bottom: 120px; }
+.hidden { display: none !important; }
+.hidden-modal { display: none !important; }
+
+#ending-screen {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex; justify-content: center; align-items: center; z-index: 20000;
+}
+
+.end-card-box {
+    background: #fff; text-align: center; padding: 30px; width: 420px;
+    border-radius: 16px; border: 5px solid #9b59b6;
+    box-shadow: 0px 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.stat-bubble {
+    background: #f8f9fa; border: 2px solid #e9ecef;
+    padding: 12px; border-radius: 8px; margin: 15px 0;
+}
+.stat-bubble small { font-size: 0.8rem; text-transform: uppercase; color: #7f8c8d; font-weight: bold; }
+#added-time-text { font-size: 1.2rem; font-weight: bold; color: #2c3e50; margin-top: 4px; }
+#close-end-btn { background-color: #9b59b6; color: white; width: 100%; padding: 14px; font-size: 1.1rem; }
+#close-end-btn:hover { background-color: #8e44ad; }
+
+
