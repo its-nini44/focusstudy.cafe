@@ -4,23 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Kitchen</title>
-    <style>
-        /* 🚨 THIS ALONE HIDES THE WIDGET FOR GOOD - NO OTHER FILES NEEDED */
-        .ui-widget:nth-child(1), #online-count { 
-            display: none !important; 
-        }
-    </style>
+    <!-- Forced browser version change string to bypass layout memory caches -->
+    <link rel="stylesheet" href="style.css?v=top_chat_toggle">
 </head>
 <body>
 
-    <!-- 🎵 REPEATING BACKGROUND AUDIO -->
+    <!-- 🎵 BACKGROUND AMBIENT AUDIO TRACK -->
     <audio id="ambient-sound" src="focus.mp3" loop></audio>
 
     <!-- 🌐 TOP BAR NAVIGATION WIDGETS -->
     <div id="top-ui-container">
         <div id="game-widgets" class="hidden">
-            <div class="ui-widget" style="display: none !important;">👥 0 Active Chefs</div>
             <div class="ui-widget" id="total-study-widget">⏱️ Total Focused: <span id="total-hours">0.0</span> hrs</div>
+            <!-- 💬 CHAT BUTTON POSITIONED DIRECTLY NEXT TO TIME TRACKER -->
+            <button id="toggle-chat-btn" class="ui-widget-btn">💬 Chat</button>
         </div>
     </div>
 
@@ -32,63 +29,77 @@
         </div>
     </div>
 
-    <!-- ⏱️ SCREEN 2: MAIN STUDY TIMER APP SCREEN -->
+    <!-- ⏱️ SCREEN 2: MAIN APP CONSOLE LAYOUT -->
     <div id="app-screen" class="hidden">
-        <div class="container">
-            <h1>Focus Kitchen</h1>
-            <p>Choose a dish to cook while you study!</p>
-            <p>Select your recipe to cook:</p>
+        <div class="workspace-wrapper">
             
-            <div class="food-menu">
-                <div class="food-card selected" data-mins="15" data-name="Masala Chai">
-                    <img src="Chai.png" alt="Chai" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
-                    <p>Masala Chai<br>(15 Mins)</p>
+            <!-- LEFT PANEL: MAIN APP WORKSPACE CONTAINER -->
+            <div class="container">
+                <h1>Focus Kitchen</h1>
+                <p>Choose a dish to cook while you study!</p>
+                <p>Select your recipe to cook:</p>
+                
+                <div class="food-menu">
+                    <div class="food-card selected" data-mins="15" data-name="Masala Chai">
+                        <img src="Chai.png" alt="Chai" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
+                        <p>Masala Chai<br>(15 Mins)</p>
+                    </div>
+                    <div class="food-card" data-mins="30" data-name="Soft Idli">
+                        <img src="Idli.jpeg" alt="Idli" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <p>Idli<br>(30 Mins)</p>
+                    </div>
+                    <div class="food-card" data-mins="45" data-name="Garlic Naan">
+                        <img src="Naan.jpg" alt="Naan" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <p>Garlic Naan<br>(45 Mins)</p>
+                    </div>
+                    <div class="food-card" data-mins="50" data-name="Masala Dosa">
+                        <img src="Dosa.jpg" alt="Dosa" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <p>Masala Dosa<br>(50 Mins)</p>
+                    </div>
+                    <div class="food-card" data-mins="60" data-name="Gulab Jamun">
+                        <img src="Sweets.jpg" alt="Sweets" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <p>Sweets<br>(60 Mins)</p>
+                    </div>
+                    <div class="food-card" data-mins="75" data-name="Crispy Samosa">
+                        <img src="samosa.jpg" alt="Samosa" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
+                        <p>Samosa<br>(75 Mins)</p>
+                    </div>
+                    <div class="food-card" data-mins="90" data-name="Palak Paneer">
+                        <img src="Paneer.jpg" alt="Paneer" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <p>Palak Paneer<br>(90 Mins)</p>
+                    </div>
+                    <div class="food-card" data-mins="120" data-name="Royal Biryani">
+                        <img src="Biryani.png" alt="Biryani" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <p>Biryani<br>(120 Mins)</p>
+                    </div>
                 </div>
-                <div class="food-card" data-mins="30" data-name="Soft Idli">
-                    <img src="Idli.jpeg" alt="Idli" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
-                    <p>Idli<br>(30 Mins)</p>
+
+                <div id="timer-display">00:00:00</div>
+                <div id="progress-display">0% Cooked</div>
+
+                <div class="volume-container">
+                    <span style="font-size: 0.9rem; font-weight: bold; margin-right: 5px;">🔊 Vol:</span>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
                 </div>
-                <div class="food-card" data-mins="45" data-name="Garlic Naan">
-                    <img src="Naan.jpg" alt="Naan" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
-                    <p>Garlic Naan<br>(45 Mins)</p>
-                </div>
-                <div class="food-card" data-mins="50" data-name="Masala Dosa">
-                    <img src="Dosa.jpg" alt="Dosa" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
-                    <p>Masala Dosa<br>(50 Mins)</p>
-                </div>
-                <div class="food-card" data-mins="60" data-name="Gulab Jamun">
-                    <img src="Sweets.jpg" alt="Sweets" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
-                    <p>Sweets<br>(60 Mins)</p>
-                </div>
-                <div class="food-card" data-mins="75" data-name="Crispy Samosa">
-                    <img src="samosa.jpg" alt="Samosa" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
-                    <p>Samosa<br>(75 Mins)</p>
-                </div>
-                <div class="food-card" data-mins="90" data-name="Palak Paneer">
-                    <img src="Paneer.jpg" alt="Paneer" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
-                    <p>Palak Paneer<br>(90 Mins)</p>
-                </div>
-                <div class="food-card" data-mins="120" data-name="Royal Biryani">
-                    <img src="Biryani.png" alt="Biryani" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
-                    <p>Biryani<br>(120 Mins)</p>
+
+                <br><br>
+                <div class="control-buttons">
+                    <button id="start-btn">Start Cooking & Studying</button>
+                    <button id="pause-btn" class="hidden-control">⏸️ Pause Timer</button>
                 </div>
             </div>
 
-            <!-- Timer UI Display -->
-            <div id="timer-display">00:00:00</div>
-            <div id="progress-display">0% Cooked</div>
-
-            <!-- VOLUME SLIDER -->
-            <div class="volume-container">
-                <span style="font-size: 0.9rem; font-weight: bold; margin-right: 5px;">🔊 Vol:</span>
-                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+            <!-- RIGHT PANEL: HIDDEN SLIDE-IN CHAT CONTAINER MODAL BOX -->
+            <div class="chat-panel-box hidden-chat">
+                <div class="chat-header-title">💬 Kitchen Chat Room <small style="display:block; font-size:11px; color:#ffb142; margin-top:2px;">(Messages vanish after 10 mins)</small></div>
+                <div id="chat-messages-stream"></div>
+                <div class="chat-inputs-form">
+                    <input type="text" id="chat-user-name" placeholder="Chef Name..." maxlength="12">
+                    <input type="text" id="chat-user-message" placeholder="Type a message..." maxlength="100">
+                    <button id="chat-send-btn">Send</button>
+                </div>
             </div>
 
-            <br><br>
-            <div class="control-buttons">
-                <button id="start-btn">Start Cooking & Studying</button>
-                <button id="pause-btn" class="hidden-control">⏸️ Pause Timer</button>
-            </div>
         </div>
     </div>
 
@@ -106,9 +117,8 @@
         </div>
     </div>
 
-    <!-- This links back to your external styles, but the custom block above overrides it completely -->
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <script src="script.js?v=top_chat_toggle"></script>
 </body>
 </html>
+
 
