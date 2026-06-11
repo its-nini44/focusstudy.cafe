@@ -4,19 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Kitchen</title>
-    <!-- Forced browser version change string to bypass layout memory caches -->
-    <link rel="stylesheet" href="style.css?v=top_chat_toggle">
+    <!-- Force browser layout cache updates -->
+    <link rel="stylesheet" href="style.css?v=small_chat">
 </head>
 <body>
 
-    <!-- 🎵 BACKGROUND AMBIENT AUDIO TRACK -->
+    <!-- 🎵 BACKGROUND AUDIO -->
     <audio id="ambient-sound" src="focus.mp3" loop></audio>
 
     <!-- 🌐 TOP BAR NAVIGATION WIDGETS -->
     <div id="top-ui-container">
         <div id="game-widgets" class="hidden">
             <div class="ui-widget" id="total-study-widget">⏱️ Total Focused: <span id="total-hours">0.0</span> hrs</div>
-            <!-- 💬 CHAT BUTTON POSITIONED DIRECTLY NEXT TO TIME TRACKER -->
             <button id="toggle-chat-btn" class="ui-widget-btn">💬 Chat</button>
         </div>
     </div>
@@ -29,11 +28,11 @@
         </div>
     </div>
 
-    <!-- ⏱️ SCREEN 2: MAIN APP CONSOLE LAYOUT -->
+    <!-- ⏱️ SCREEN 2: MAIN APP SCREEN -->
     <div id="app-screen" class="hidden">
         <div class="workspace-wrapper">
             
-            <!-- LEFT PANEL: MAIN APP WORKSPACE CONTAINER -->
+            <!-- TIMER PANEL -->
             <div class="container">
                 <h1>Focus Kitchen</h1>
                 <p>Choose a dish to cook while you study!</p>
@@ -89,9 +88,9 @@
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: HIDDEN SLIDE-IN CHAT CONTAINER MODAL BOX -->
+            <!-- CHAT PANEL (Starts Hidden via class) -->
             <div class="chat-panel-box hidden-chat">
-                <div class="chat-header-title">💬 Kitchen Chat Room <small style="display:block; font-size:11px; color:#ffb142; margin-top:2px;">(Messages vanish after 10 mins)</small></div>
+                <div class="chat-header-title">💬 Kitchen Chat Room</div>
                 <div id="chat-messages-stream"></div>
                 <div class="chat-inputs-form">
                     <input type="text" id="chat-user-name" placeholder="Chef Name..." maxlength="12">
@@ -103,7 +102,7 @@
         </div>
     </div>
 
-    <!-- 🏆 SCREEN 3: CINEMATIC REWARD ENDING MODAL -->
+    <!-- 🏆 SCREEN 3: ENDING MODAL -->
     <div id="ending-screen" class="hidden-modal">
         <div class="end-card-box">
             <img src="Victory2.jpg" alt="Victory Banner" style="width: 100%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 12px;">
@@ -117,8 +116,10 @@
         </div>
     </div>
 
-    <script src="script.js?v=top_chat_toggle"></script>
+    <!-- Force script execution track update -->
+    <script src="script.js?v=small_chat"></script>
 </body>
 </html>
+
 
 
