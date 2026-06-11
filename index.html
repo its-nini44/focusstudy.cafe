@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Kitchen</title>
-    <!-- Changing this to ?v=fixed breaks your browser's memory and forces your styling fixes to load -->
-    <link rel="stylesheet" href="style.css?v=fixed">
+    <style>
+        /* 🚨 THIS ALONE HIDES THE WIDGET FOR GOOD - NO OTHER FILES NEEDED */
+        .ui-widget:nth-child(1), #online-count { 
+            display: none !important; 
+        }
+    </style>
 </head>
 <body>
 
-    <!-- 🎵 YOUR REPEATING BACKGROUND AUDIO ASSET -->
+    <!-- 🎵 REPEATING BACKGROUND AUDIO -->
     <audio id="ambient-sound" src="focus.mp3" loop></audio>
 
     <!-- 🌐 TOP BAR NAVIGATION WIDGETS -->
     <div id="top-ui-container">
         <div id="game-widgets" class="hidden">
-            <!-- WIDGET REMOVED PERMANENTLY FROM LINE 16 -->
+            <div class="ui-widget" style="display: none !important;">👥 0 Active Chefs</div>
             <div class="ui-widget" id="total-study-widget">⏱️ Total Focused: <span id="total-hours">0.0</span> hrs</div>
         </div>
     </div>
@@ -28,50 +32,42 @@
         </div>
     </div>
 
-    <!-- ⏱️ SCREEN 2: MAIN STUDY TIMER APP SCREEN (Hidden at start) -->
+    <!-- ⏱️ SCREEN 2: MAIN STUDY TIMER APP SCREEN -->
     <div id="app-screen" class="hidden">
         <div class="container">
             <h1>Focus Kitchen</h1>
             <p>Choose a dish to cook while you study!</p>
-
             <p>Select your recipe to cook:</p>
+            
             <div class="food-menu">
-                <!-- 1. Chai Card (15 Mins) - Shortest (Default Selected) -->
                 <div class="food-card selected" data-mins="15" data-name="Masala Chai">
                     <img src="Chai.png" alt="Chai" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
                     <p>Masala Chai<br>(15 Mins)</p>
                 </div>
-                <!-- 2. Idli Card (30 Mins) -->
                 <div class="food-card" data-mins="30" data-name="Soft Idli">
                     <img src="Idli.jpeg" alt="Idli" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
                     <p>Idli<br>(30 Mins)</p>
                 </div>
-                <!-- 3. Naan Card (45 Mins) -->
                 <div class="food-card" data-mins="45" data-name="Garlic Naan">
                     <img src="Naan.jpg" alt="Naan" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
                     <p>Garlic Naan<br>(45 Mins)</p>
                 </div>
-                <!-- 4. Dosa Card (50 Mins) -->
                 <div class="food-card" data-mins="50" data-name="Masala Dosa">
                     <img src="Dosa.jpg" alt="Dosa" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
                     <p>Masala Dosa<br>(50 Mins)</p>
                 </div>
-               <!-- 5. Sweets Card (60 Mins) -->
                 <div class="food-card" data-mins="60" data-name="Gulab Jamun">
                     <img src="Sweets.jpg" alt="Sweets" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
                     <p>Sweets<br>(60 Mins)</p>
                 </div>
-                <!-- 6. Real Samosa Card (75 Mins) -->
                 <div class="food-card" data-mins="75" data-name="Crispy Samosa">
                     <img src="samosa.jpg" alt="Samosa" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
                     <p>Samosa<br>(75 Mins)</p>
                 </div>
-                 <!-- 7. Paneer Card (90 Mins) -->
                 <div class="food-card" data-mins="90" data-name="Palak Paneer">
                     <img src="Paneer.jpg" alt="Paneer" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
                     <p>Palak Paneer<br>(90 Mins)</p>
                 </div>
-                <!-- 8. Biryani Card (120 Mins) - Longest -->
                 <div class="food-card" data-mins="120" data-name="Royal Biryani">
                     <img src="Biryani.png" alt="Biryani" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
                     <p>Biryani<br>(120 Mins)</p>
@@ -82,14 +78,13 @@
             <div id="timer-display">00:00:00</div>
             <div id="progress-display">0% Cooked</div>
 
-            <!-- 🔊 VOLUME CONTROL SLIDER -->
+            <!-- VOLUME SLIDER -->
             <div class="volume-container">
                 <span style="font-size: 0.9rem; font-weight: bold; margin-right: 5px;">🔊 Vol:</span>
                 <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
             </div>
 
             <br><br>
-            <!-- 🎮 CONTROL BUTTONS CONTAINER -->
             <div class="control-buttons">
                 <button id="start-btn">Start Cooking & Studying</button>
                 <button id="pause-btn" class="hidden-control">⏸️ Pause Timer</button>
@@ -103,7 +98,6 @@
             <img src="Victory2.jpg" alt="Victory Banner" style="width: 100%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 12px;">
             <h2 style="font-size: 1.1rem; margin: 5px 0; color: #2c3e50;">You completed your session!</h2>
             <p id="session-summary-text">You have successfully completed your study blocks!</p>
-            
             <div class="stat-bubble">
                 <small>Session Credit:</small>
                 <div id="added-time-text">+15 Mins Logged</div>
@@ -112,7 +106,9 @@
         </div>
     </div>
 
-    <!-- Changing this to ?v=fixed ensures the browser loads your non-crashing tracking script -->
-    <script src="script.js?v=fixed"></script>
+    <!-- This links back to your external styles, but the custom block above overrides it completely -->
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
 </body>
 </html>
+
