@@ -18,7 +18,7 @@ if (volumeSlider && ambientAudio) {
 }
 
 // ========================================================
-// 🎬 WINDOW PAGE VIEW SWAPPING HUB
+// 🎬 WINDOW SWAPS
 // ========================================================
 const introCard = document.getElementById('intro-card');
 if (introCard) {
@@ -33,7 +33,7 @@ document.getElementById('begin-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 🎚️ RECIPE SELECTION GRID CONFIGURATIONS
+// 🎚️ RECIPE GRIDS
 // ========================================================
 let countdownInterval = null;
 let selectedMinutes = 15; 
@@ -53,7 +53,7 @@ document.querySelectorAll('.food-card').forEach(card => {
 });
 
 // ========================================================
-// 🛡️ ACCURATE TIMING LOOP CONTROLLER ENGINE
+// 🛡️ TIMER ENGINES
 // ========================================================
 let targetEndTime; 
 let totalSecondsTracked; 
@@ -169,14 +169,13 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 💬 NATIVE CHAT INTERFACE EXPIRATION & TOGGLE ACTION LINKS
+// 💬 CHAT TOGGLE INTERACTION & DESTRUCT LOGIC
 // ========================================================
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
 const chatPanel = document.querySelector('.chat-panel-box');
 
 if (toggleChatBtn && chatPanel) {
     toggleChatBtn.addEventListener('click', function() {
-        // Toggle the visual presence of the panel smoothly across view states
         chatPanel.classList.toggle('hidden-chat');
     });
 }
@@ -208,7 +207,7 @@ function executeSendMessageAction() {
     streamEl.scrollTop = streamEl.scrollHeight;
     msgInput.value = "";
 
-    // ⏳ THE 10-MINUTE SELF DESTRUCT TIMER: (10 mins = 600,000 milliseconds)
+    // ⏳ 10-Minute Wipe out
     setTimeout(function() {
         bubble.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
         bubble.style.opacity = "0";
