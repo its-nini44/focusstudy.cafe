@@ -13,7 +13,6 @@ body {
     overflow: hidden;
 }
 
-/* 🌐 ADJUST HEADER TO SIT AT TOP RIGHT FOR SCALING */
 #top-ui-container {
     position: fixed;
     top: 20px;
@@ -38,7 +37,6 @@ body {
     border: 2px solid #9b59b6;
 }
 
-/* 💬 HEADER WIDGET CHAT BUTTON RULES */
 .ui-widget-btn {
     background: rgba(0, 0, 0, 0.8);
     color: #ffb142;
@@ -60,6 +58,7 @@ body {
     transform: scale(0.95);
 }
 
+/* CONTAINER HOLDER WRAPPER */
 .workspace-wrapper {
     display: flex;
     flex-direction: row;
@@ -67,24 +66,26 @@ body {
     align-items: center;
     gap: 20px;
     width: 95vw;
-    max-width: 1150px;
-    height: 85vh;
+    max-width: 900px;
+    height: 80vh;
 }
 
+/* 🛑 FIX: MADE THE MAIN WHITE TIMER SECTION SMALLER & TIGHTER */
 .container {
-    flex: 1.2;
+    flex: 1;
     text-align: center;
     background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
+    padding: 15px 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
     height: 100%;
+    max-width: 500px;
     overflow-y: auto;
     box-sizing: border-box;
 }
 
-#timer-display { font-size: 2.5rem; font-weight: bold; margin: 5px 0; color: #d63031; }
-#progress-display { font-size: 1.3rem; font-weight: bold; color: #27ae60; margin-bottom: 10px; }
+#timer-display { font-size: 2.2rem; font-weight: bold; margin: 3px 0; color: #d63031; }
+#progress-display { font-size: 1.1rem; font-weight: bold; color: #27ae60; margin-bottom: 5px; }
 
 .control-buttons {
     display: flex;
@@ -92,38 +93,39 @@ body {
     gap: 10px;
 }
 
-button { background-color: #ffb142; border: none; padding: 12px 24px; font-size: 1rem; font-weight: bold; cursor: pointer; border-radius: 5px; transition: background-color 0.2s; }
+button { background-color: #ffb142; border: none; padding: 10px 20px; font-size: 0.95rem; font-weight: bold; cursor: pointer; border-radius: 5px; transition: background-color 0.2s; }
 button:hover { background-color: #cc8e35; }
 
 #pause-btn { background-color: #74b9ff; }
 #pause-btn:hover { background-color: #0984e3; color: white; }
-
 .hidden-control { display: none !important; }
 
 .volume-container {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    margin: 15px 0 5px 0;
+    margin: 10px 0 0 0;
     background: #f1f2f6;
-    padding: 8px 15px;
+    padding: 6px 12px;
     border-radius: 20px;
     border: 2px solid #ced6e0;
 }
 
-#volume-slider { cursor: pointer; accent-color: #ffb142; width: 100px; }
-.food-menu { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 10px auto; max-width: 580px; }
-.food-card { background: #f1f2f6; border: 3px solid #ced6e0; border-radius: 8px; padding: 6px; cursor: pointer; width: 110px; text-align: center; box-sizing: border-box;}
-.food-card img { display: block; margin: 0 auto 5px auto; }
-.food-card.selected { border-color: #ffb142; background: #ffeaa7; box-shadow: 0 0 10px rgba(255, 177, 66, 0.5); }
+#volume-slider { cursor: pointer; accent-color: #ffb142; width: 80px; }
+
+/* FOOD GRID MINIFIED CONFIGS */
+.food-menu { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 8px auto; max-width: 460px; }
+.food-card { background: #f1f2f6; border: 3px solid #ced6e0; border-radius: 8px; padding: 4px; cursor: pointer; width: 100px; text-align: center; box-sizing: border-box; font-size: 0.8rem;}
+.food-card img { display: block; margin: 0 auto 3px auto; width: 50px; height: 50px; object-fit: cover;}
+.food-card.selected { border-color: #ffb142; background: #ffeaa7; box-shadow: 0 0 8px rgba(255, 177, 66, 0.5); }
 #start-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 9999; }
 .start-card { text-align: center; background: rgba(255, 255, 255, 0.85); padding: 30px 50px; border-radius: 15px; border: 4px solid #e17055; margin-bottom: 120px; }
 .hidden { display: none !important; }
 .hidden-modal { display: none !important; }
 
-/* 💬 SELF-DESTRUCT CHAT CORE LAYOUT PANEL PACKAGES */
+/* 💬 COMPACT CHAT PANEL BOX INTERFACE STYLES */
 .chat-panel-box {
-    flex: 0.8;
+    width: 320px;
     background: rgba(44, 62, 80, 0.95);
     border-radius: 10px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
@@ -132,10 +134,9 @@ button:hover { background-color: #cc8e35; }
     flex-direction: column;
     box-sizing: border-box;
     border: 3px solid #ffb142;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.2s ease-in-out;
 }
 
-/* HIDE ELEMENT AND REMOVE COLLAPSED SPACE WHEN CLOSED */
 .hidden-chat {
     display: none !important;
 }
@@ -143,58 +144,52 @@ button:hover { background-color: #cc8e35; }
 .chat-header-title {
     background: #222f3e;
     color: #fff;
-    padding: 15px;
+    padding: 12px;
     font-weight: bold;
     text-align: center;
     border-bottom: 2px solid #ffb142;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 #chat-messages-stream {
     flex: 1;
-    padding: 15px;
+    padding: 12px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .chat-bubble-row {
     background: #34495e;
     color: #fff;
-    padding: 10px 12px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    line-height: 1.4;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    line-height: 1.3;
     border-left: 4px solid #ffb142;
-    animation: fadeInBubble 0.3s ease-in-out forwards;
-}
-
-@keyframes fadeInBubble {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .chat-inputs-form {
     background: #222f3e;
-    padding: 12px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     border-top: 2px solid #ffb142;
 }
 
 .chat-inputs-form input {
     background: #fff;
     border: none;
-    padding: 10px;
+    padding: 8px;
     border-radius: 4px;
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
-#chat-user-name { width: 45%; font-weight: bold; color: #2c3e50; }
-#chat-send-btn { background: #ffb142; color: #222f3e; padding: 10px; font-size: 0.95rem; border-radius: 4px; }
+#chat-user-name { width: 55%; font-weight: bold; color: #2c3e50; }
+#chat-send-btn { background: #ffb142; color: #222f3e; padding: 8px; font-size: 0.85rem; border-radius: 4px; }
 #chat-send-btn:hover { background: #cc8e35; }
 
 #ending-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 20000; }
@@ -207,8 +202,9 @@ button:hover { background-color: #cc8e35; }
 
 @media (max-width: 820px) {
     .workspace-wrapper { flex-direction: column; overflow-y: auto; height: 90vh; gap: 15px; padding-top: 60px; }
-    .container, .chat-panel-box { width: 100%; flex: none; height: auto; }
-    .chat-panel-box { height: 400px; }
+    .container, .chat-panel-box { width: 100%; max-width: 100%; height: auto; }
+    .chat-panel-box { height: 350px; }
 }
+
 
 
