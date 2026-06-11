@@ -1,6 +1,3 @@
-// ========================================================
-// ⏱️ PERSISTENT STORAGE MEMORY LOADER (localStorage)
-// ========================================================
 let totalStudyMinutes = parseFloat(localStorage.getItem('focusKitchenTotalTime')) || 0;
 
 function updateTotalTimeWidget() {
@@ -21,44 +18,7 @@ if (volumeSlider && ambientAudio) {
 }
 
 // ========================================================
-// 🌐 REAL-TIME GLOBAL USER COUNTER ENGINE
-// ========================================================
-// Choose a completely unique phrase or name below to act as your custom server room code
-// TIP: Change 'focuskitchen_unique_key_2026' to your real name or github username!
-const databaseTallyCode = "focuskitchen_unique_key_2026";
-
-function updateRealOnlineUsers() {
-    // Send a secure background fetch request to the public CountAPI cluster to record a page hit
-    fetch(`https://countapi.xyz{databaseTallyCode}`)
-        .then(response => response.json())
-        .then(data => {
-            // CountAPI tallies total lifetime clicks. We use modular math to convert the total click
-            // pacing into a fluctuating, live estimation of active multi-device visitors!
-            let totalPageHits = data.value;
-            let totalRealActiveChefs = 1; // Default minimum is always you!
-
-            if (totalPageHits > 0) {
-                // Fluctuates naturally between 1 and 6 users depending on world page clicks!
-                totalRealActiveChefs = (totalPageHits % 5) + 1; 
-            }
-
-            const onlineCountEl = document.getElementById('online-count');
-            if (onlineCountEl) {
-                onlineCountEl.innerText = totalRealActiveChefs;
-            }
-        })
-        .catch(error => {
-            // Fallback safe measure in case your internet glitches out or drops connection
-            console.log("Database response delayed. Defaulting local user count.");
-            document.getElementById('online-count').innerText = "1";
-        });
-}
-
-// Ping the global web scoreboard once every 7 seconds to check if anyone else is online
-setInterval(updateRealOnlineUsers, 7000);
-
-// ========================================================
-// 🎬 WINDOW PAGE SWAP CONTROLLER
+// 🎬 WINDOW PAGE VIEW SWAPPING HUB
 // ========================================================
 const introCard = document.getElementById('intro-card');
 if (introCard) {
@@ -70,20 +30,19 @@ document.getElementById('begin-btn').addEventListener('click', function() {
     document.getElementById('app-screen').classList.remove('hidden');
     document.getElementById('game-widgets').classList.remove('hidden');
     updateTotalTimeWidget();
-    updateOnlineUsers();
 });
 
 // ========================================================
-// 🎚️ RECIPE GRID CONFIGURATIONS
+// 🎚️ RECIPE SELECTION GRID CONFIGURATIONS
 // ========================================================
-let countdownInterval;
-let selectedMinutes = 15; // Defaults to Chai (15 mins)
+let countdownInterval = null;
+let selectedMinutes = 15; 
 let selectedFoodName = "Masala Chai";
+let isTimerRunning = false; 
 
 document.querySelectorAll('.food-card').forEach(card => {
     card.addEventListener('click', function() {
-        // block clicks if the clock is running
-        if (countdownInterval || isPaused) return;
+        if (isTimerRunning) return;
 
         document.querySelectorAll('.food-card').forEach(c => c.classList.remove('selected'));
         this.classList.add('selected');
@@ -94,28 +53,27 @@ document.querySelectorAll('.food-card').forEach(card => {
 });
 
 // ========================================================
-// 🛡️ PAUSE & ACCURATE TIMER CONTROL ENGINE
+// 🛡️ ACCURATE TIMING LOOP CONTROLLER ENGINE
 // ========================================================
-let targetEndTime; // Real-world destination timestamp
+let targetEndTime; 
 let totalSecondsTracked; 
-let secondsRemainingSaved; // Holds snapshot value when frozen
+let secondsRemainingSaved; 
 let isPaused = false;
 
 document.getElementById('start-btn').addEventListener('click', function() {
     clearInterval(countdownInterval);
     isPaused = false;
+    isTimerRunning = true; 
 
-    // Reset button states
     const pauseBtn = document.getElementById('pause-btn');
     pauseBtn.innerText = "⏸️ Pause Timer";
-    pauseBtn.classList.remove('hidden-control'); // Show pause button
-    this.innerText = "🔄 Restart Cooking"; // Shift text option
+    pauseBtn.classList.remove('hidden-control'); 
+    this.innerText = "🔄 Restart Cooking"; 
 
-    // Fire audio loop tracking
     if (ambientAudio && volumeSlider) {
         ambientAudio.currentTime = 0; 
         ambientAudio.volume = volumeSlider.value; 
-        ambientAudio.play().catch(e => console.log("Audio play deferred:", e));
+        ambientAudio.play().catch(e => console.log("Audio deferred:", e));
     }
 
     totalSecondsTracked = selectedMinutes * 60;
@@ -124,33 +82,22 @@ document.getElementById('start-btn').addEventListener('click', function() {
     runClockIntervalLoop();
 });
 
-// ⏸️ PAUSE ACTION TOGGLE CLICK MECHANIC
 document.getElementById('pause-btn').addEventListener('click', function() {
-    if (!countdownInterval && !isPaused) return; // Do nothing if timer hasn't started
+    if (!isTimerRunning) return; 
 
     if (!isPaused) {
-        // STATE: TRIGGER PAUSE EVENT
         isPaused = true;
-        clearInterval(countdownInterval); // Freeze screen checks
+        clearInterval(countdownInterval); 
         countdownInterval = null;
-        
-        this.innerText = "▶️ Resume Timer"; // Update button text
-        
-        if (ambientAudio) ambientAudio.pause(); // Pause matching lofi music
-
-        // Capture EXACT leftover seconds remaining right now
+        this.innerText = "▶️ Resume Timer"; 
+        if (ambientAudio) ambientAudio.pause(); 
         secondsRemainingSaved = Math.ceil((targetEndTime - Date.now()) / 1000);
     } else {
-        // STATE: TRIGGER RESUME EVENT
         isPaused = false;
         this.innerText = "⏸️ Pause Timer";
-        
         if (ambientAudio) ambientAudio.play().catch(e => console.log(e));
-
-        // Re-calculate targeted destination point using saved snapshot offset seconds
         targetEndTime = Date.now() + (secondsRemainingSaved * 1000);
-        
-        runClockIntervalLoop(); // Restart timing cycle loop
+        runClockIntervalLoop(); 
     }
 });
 
@@ -162,11 +109,11 @@ function runClockIntervalLoop() {
         if (finished) {
             clearInterval(countdownInterval);
             countdownInterval = null;
+            isTimerRunning = false; 
             document.getElementById('timer-display').innerText = "00:00:00";
             document.getElementById('progress-display').innerText = "100% Cooked! 🎉";
-            document.getElementById('pause-btn').classList.add('hidden-control'); // Hide pause button again
+            document.getElementById('pause-btn').classList.add('hidden-control'); 
             document.getElementById('start-btn').innerText = "Start Cooking & Studying";
-
             if (ambientAudio) ambientAudio.pause();
             triggerWellDoneEnding();
         }
@@ -195,40 +142,80 @@ function updateTimerEngine() {
     
     if (percentCooked < 0) percentCooked = 0;
     if (percentCooked > 100) percentCooked = 100;
-
     document.getElementById('progress-display').innerText = `${percentCooked}% Cooked`;
     
     return false;
 }
 
-// ========================================================
-// 🏆 SPEECH BROADCAST & END SUMMARY RENDERING
-// ========================================================
 function triggerWellDoneEnding() {
-    speakCongratulationVoice();
-
     document.getElementById('session-summary-text').innerText = `You have successfully completed your ${selectedFoodName} cooking block!`;
-    document.getElementById('added-time-text').innerText = `+${selectedMinutes >= 1 ? Math.floor(selectedMinutes) : selectedMinutes * 60} ${selectedMinutes >= 1 ? 'Mins' : 'Secs'} Logged`;
+    document.getElementById('added-time-text').innerText = `+${Math.floor(selectedMinutes)} Mins Logged`;
 
-    document.getElementById('ending-screen').classList.remove('hidden-modal');
-}
-
-document.getElementById('close-end-btn').addEventListener('click', function() {
     totalStudyMinutes += selectedMinutes;
     localStorage.setItem('focusKitchenTotalTime', totalStudyMinutes);
     updateTotalTimeWidget();
-    document.getElementById('ending-screen').classList.add('hidden-modal');
-    document.getElementById('progress-display').innerText = "0% Cooked";
+
+    const endingScreen = document.getElementById('ending-screen');
+    if (endingScreen) {
+        endingScreen.classList.remove('hidden-modal');
+    }
+}
+
+document.getElementById('close-end-btn').addEventListener('click', function() {
+    const endingScreen = document.getElementById('ending-screen');
+    if (endingScreen) {
+        endingScreen.classList.add('hidden-modal');
+    }
 });
 
-function speakCongratulationVoice() {
-    try {
-        let speechMessage = new SpeechSynthesisUtterance("Mission completed, great work chef!");
-        speechMessage.volume = 1.0; 
-        speechMessage.rate = 0.95;  
-        speechMessage.pitch = 1.1;  
-        window.speechSynthesis.speak(speechMessage);
-    } catch(e) {
-        console.log("Speech initialization failed:", e);
-    }
+// ========================================================
+// 💬 NATIVE CHAT INTERFACE EXPIRATION & TOGGLE ACTION LINKS
+// ========================================================
+const toggleChatBtn = document.getElementById('toggle-chat-btn');
+const chatPanel = document.querySelector('.chat-panel-box');
+
+if (toggleChatBtn && chatPanel) {
+    toggleChatBtn.addEventListener('click', function() {
+        // Toggle the visual presence of the panel smoothly across view states
+        chatPanel.classList.toggle('hidden-chat');
+    });
+}
+
+const sendBtn = document.getElementById('chat-send-btn');
+const streamEl = document.getElementById('chat-messages-stream');
+
+if (sendBtn && streamEl) {
+    sendBtn.addEventListener('click', executeSendMessageAction);
+    document.getElementById('chat-user-message').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') executeSendMessageAction();
+    });
+}
+
+function executeSendMessageAction() {
+    const nameInput = document.getElementById('chat-user-name');
+    const msgInput = document.getElementById('chat-user-message');
+    
+    let chefName = nameInput.value.trim() || "Anonymous Chef";
+    let messageText = msgInput.value.trim();
+
+    if (!messageText) return; 
+
+    const bubble = document.createElement('div');
+    bubble.className = "chat-bubble-row";
+    bubble.innerHTML = `<strong>${chefName}:</strong> ${messageText}`;
+    
+    streamEl.appendChild(bubble);
+    streamEl.scrollTop = streamEl.scrollHeight;
+    msgInput.value = "";
+
+    // ⏳ THE 10-MINUTE SELF DESTRUCT TIMER: (10 mins = 600,000 milliseconds)
+    setTimeout(function() {
+        bubble.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+        bubble.style.opacity = "0";
+        bubble.style.transform = "scale(0.95)";
+        
+        setTimeout(function() {
+            bubble.remove(); 
+        }, 500);
+    }, 600000); 
 }
