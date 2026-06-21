@@ -166,7 +166,7 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// SAFARI COMPLIANT CHAT LOGIC
+// 🌐 FAST SYNC MULTI-USER CHAT ENGINE (WIPES ON REFRESH)
 // ========================================================
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
 const chatPanel = document.getElementById('kitchen-chat-box');
@@ -180,65 +180,107 @@ if (toggleChatBtn && chatPanel) {
 
 const sendBtn = document.getElementById('chat-send-btn');
 const msgInput = document.getElementById('chat-user-message');
+const streamEl = document.getElementById('chat-messages-stream');
+
+// Generates a random session key every load so refresh explicitly cleans chat history
+const UNIQUE_ROOM_ID = "focus_kitchen_session_" + Math.random().toString(36).substring(2, 9); 
+const PUBLIC_API_URL = `https://restful-api.dev`;
+
+let loadedMessageIds = new Set();
 
 if (sendBtn) {
-    sendBtn.addEventListener('click', function(e) {
+    sendBtn.onclick = function(e) {
         e.preventDefault();
-        executeSendMessageAction();
-    });
+        sendPublicChatMessage();
+    };
 }
 
 if (msgInput) {
-    msgInput.addEventListener('keydown', function(e) {
+    msgInput.onkeydown = function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            executeSendMessageAction();
+            sendPublicChatMessage();
         }
-    });
+    };
 }
 
-function executeSendMessageAction() {
+function sendPublicChatMessage() {
     const nameInput = document.getElementById('chat-user-name');
     const msgInput = document.getElementById('chat-user-message');
-    const streamEl = document.getElementById('chat-messages-stream');
     
-    if (!msgInput || !streamEl) return;
+    if (!msgInput) return;
 
     let chefName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Anonymous Chef";
     let messageText = msgInput.value.trim();
 
     if (!messageText) return; 
 
-    const bubble = document.createElement('div');
-    bubble.className = "chat-bubble-row";
-    bubble.innerHTML = `<strong>${chefName}:</strong> ${messageText}`;
-    
-    streamEl.appendChild(bubble);
-    
-    // Explicit wrapper scroll anchor for Safari thread engine
-    setTimeout(function() {
-        streamEl.scrollTop = streamEl.scrollHeight;
-    }, 10);
-    
-    msgInput.value = "";
+    const payload = {
+        name: UNIQUE_ROOM_ID,
+        data: {
+            username: chefName,
+            message: messageText,
+            sentAt: Date.now()
+        }
+    };
 
-    // ⏳ 10-Minute Wipe out
-    setTimeout(function() {
-        bubble.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
-        bubble.style.opacity = "0";
-        bubble.style.transform = "scale(0.95)";
-        
-        setTimeout(function() {
-            bubble.remove(); 
-        }, 500);
-    }, 600000); 
+    fetch(PUBLIC_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        msgInput.value = "";
+        fetchIncomingMessages(); 
+    })
+    .catch(err => console.log("Network broadcast error:", err));
 }
 
-// 🧹 INLINE WIPE CLEANUP
-const nameField = document.getElementById('chat-user-name');
-const msgField = document.getElementById('chat-user-message');
-const streamField = document.getElementById('chat-messages-stream');
+function fetchIncomingMessages() {
+    if (!streamEl) return;
 
-if (nameField) nameField.value = "";
-if (msgField) msgField.value = "";
-if (streamField) streamField.innerHTML = "";
+    fetch(PUBLIC_API_URL)
+    .then(res => res.json())
+    .then(data => {
+        if (!Array.isArray(data)) return;
+
+        const roomMessages = data.filter(item => item.name === UNIQUE_ROOM_ID && item.data);
+        roomMessages.sort((a, b) => (a.data.sentAt || 0) - (b.data.sentAt || 0));
+
+        roomMessages.forEach(item => {
+            if (!loadedMessageIds.has(item.id)) {
+                loadedMessageIds.add(item.id);
+
+                const bubble = document.createElement('div');
+                bubble.className = "chat-bubble-row";
+                bubble.innerHTML = `<strong>${item.data.username}:</strong> ${item.data.message}`;
+                
+                streamEl.appendChild(bubble);
+                
+                setTimeout(function() {
+                    streamEl.scrollTop = streamEl.scrollHeight;
+                }, 10);
+
+                // ⏳ 10-Minute self removal queue
+                setTimeout(function() {
+                    bubble.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+                    bubble.style.opacity = "0";
+                    bubble.style.transform = "scale(0.95)";
+                    setTimeout(() => bubble.remove(), 500);
+                }, 600000);
+            }
+        });
+    })
+    .catch(err => console.log("Data sync issue:", err));
+}
+
+// 🔄 ULTRA FAST REFRESH LOOP: Fetch updates every 500 milliseconds (0.5s)
+setInterval(fetchIncomingMessages, 500);
+
+// 🧹 PHYSICAL RESET WINDOW INITIALIZER
+window.onload = function() {
+    const nameInput = document.getElementById('chat-user-name');
+    const msgInput = document.getElementById('chat-user-message');
+    const streamEl = document.getElementById('chat-messages-stream');
+
+    if (nameInput) nameInput.value = "";
