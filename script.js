@@ -169,7 +169,7 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 💬 CHAT TOGGLE INTERACTION & DESTRUCT LOGIC
+// 💬 CHAT TOGGLE INTERACTION & FIXED LOGIC
 // ========================================================
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
 const chatPanel = document.querySelector('.chat-panel-box');
@@ -182,21 +182,35 @@ if (toggleChatBtn && chatPanel) {
 
 const sendBtn = document.getElementById('chat-send-btn');
 const streamEl = document.getElementById('chat-messages-stream');
+const msgInput = document.getElementById('chat-user-message');
 
 if (sendBtn && streamEl) {
-    sendBtn.addEventListener('click', executeSendMessageAction);
-    document.getElementById('chat-user-message').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') executeSendMessageAction();
+    sendBtn.addEventListener('click', function(e) {
+        e.preventDefault(); 
+        executeSendMessageAction();
+    });
+}
+
+if (msgInput) {
+    msgInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+            executeSendMessageAction();
+        }
     });
 }
 
 function executeSendMessageAction() {
     const nameInput = document.getElementById('chat-user-name');
     const msgInput = document.getElementById('chat-user-message');
+    const streamEl = document.getElementById('chat-messages-stream');
     
-    let chefName = nameInput.value.trim() || "Anonymous Chef";
-    let messageText = msgInput.value.trim();
+    if (!msgInput || !streamEl) return;
 
+    let chefName = nameInput ? nameInput.value.trim() : "Anonymous Chef";
+    if (!chefName) chefName = "Anonymous Chef";
+    
+    let messageText = msgInput.value.trim();
     if (!messageText) return; 
 
     const bubble = document.createElement('div');
@@ -205,9 +219,10 @@ function executeSendMessageAction() {
     
     streamEl.appendChild(bubble);
     streamEl.scrollTop = streamEl.scrollHeight;
+    
     msgInput.value = "";
 
-    // ⏳ 10-Minute Wipe out
+    // ⏳ 10-Minute Wipe out queue
     setTimeout(function() {
         bubble.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
         bubble.style.opacity = "0";
@@ -218,6 +233,7 @@ function executeSendMessageAction() {
         }, 500);
     }, 600000); 
 }
+
 // ========================================================
 // 🧹 PAGE REFRESH WIPE CLEAN UP
 // ========================================================
