@@ -166,7 +166,7 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 💬 ULTRA-FAST NATIVE WEBSOCKET CHAT ENGINE (NO SIGNUP)
+// 💬 STABLE SERVER-SENT EVENTS INSTANT CHAT (NTFY POWERED)
 // ========================================================
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
 const chatPanel = document.getElementById('kitchen-chat-box');
@@ -182,55 +182,43 @@ const sendBtn = document.getElementById('chat-send-btn');
 const msgInput = document.getElementById('chat-user-message');
 const streamEl = document.getElementById('chat-messages-stream');
 
-// Secure open-access native broker line (100% active, zero signup, secure layer)
-const SECURE_BROKER_URL = "wss://://hivemq.com";
-let nativeSocket;
+// Secure public communication frequency string
+const NTFY_TOPIC_ROOM = "focus_kitchen_stream_channel_999";
+const STREAM_SUBSCRIBE_URL = `https://ntfy.sh{NTFY_TOPIC_ROOM}/sse`;
+const BROADCAST_PUBLISH_URL = `https://ntfy.sh{NTFY_TOPIC_ROOM}`;
 
-function establishSecureConnection() {
-    nativeSocket = new WebSocket(SECURE_BROKER_URL);
+// Initialize native browser background stream listener
+const networkStreamReader = new EventSource(STREAM_SUBSCRIBE_URL);
 
-    nativeSocket.onopen = function() {
-        console.log("Global thread linked.");
-    };
+networkStreamReader.onmessage = function(event) {
+    if (!streamEl) return;
+    
+    try {
+        const payloadData = JSON.parse(event.data);
+        // The message string is sent as the core text property of the packet
+        const messagePayload = JSON.parse(payloadData.message);
 
-    nativeSocket.onmessage = function(event) {
-        if (!streamEl) return;
+        if (!messagePayload.username || !messagePayload.message) return;
+
+        const bubble = document.createElement('div');
+        bubble.className = "chat-bubble-row";
+        bubble.innerHTML = `<strong>${messagePayload.username}:</strong> ${messagePayload.message}`;
         
-        // Filter out native protocol pings to isolate pure text inputs
-        if (typeof event.data !== 'string' || event.data.length < 5) return;
-
-        try {
-            // Find the raw text message hidden inside the network packet frame
-            const cleanText = event.data.substring(event.data.indexOf("{"));
-            const parsed = JSON.parse(cleanText);
-            
-            if (!parsed.username || !parsed.message) return;
-
-            const bubble = document.createElement('div');
-            bubble.className = "chat-bubble-row";
-            bubble.innerHTML = `<strong>${parsed.username}:</strong> ${parsed.message}`;
-            
-            streamEl.appendChild(bubble);
-            
-            setTimeout(function() {
-                streamEl.scrollTop = streamEl.scrollHeight;
-            }, 10);
-        } catch (err) {
-            // Drop unformatted browser system packages cleanly
-        }
-    };
-
-    nativeSocket.onclose = function() {
-        setTimeout(establishSecureConnection, 2000);
-    };
-}
-
-establishSecureConnection();
+        streamEl.appendChild(bubble);
+        
+        // Instant layout adjustment alignment
+        setTimeout(function() {
+            streamEl.scrollTop = streamEl.scrollHeight;
+        }, 10);
+    } catch (err) {
+        // Soft catch for system test packets sent by server on connection start
+    }
+};
 
 if (sendBtn) {
     sendBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        broadcastTextMessage();
+        transmitInstantMessage();
     });
 }
 
@@ -238,37 +226,39 @@ if (msgInput) {
     msgInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            broadcastTextMessage();
+            transmitInstantMessage();
         }
     });
 }
 
-function broadcastTextMessage() {
+function transmitInstantMessage() {
     const nameInput = document.getElementById('chat-user-name');
     const msgInput = document.getElementById('chat-user-message');
     
-    if (!msgInput || nativeSocket.readyState !== WebSocket.OPEN) return;
+    if (!msgInput) return;
 
     let chefName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Anonymous Chef";
     let messageText = msgInput.value.trim();
 
     if (!messageText) return; 
 
-    const dataPayload = {
+    const bodyPayload = {
         username: chefName,
         message: messageText
     };
 
-    // Format the network packet headers to deliver the text over the public broker safely
-    const payloadString = JSON.stringify(dataPayload);
-    const topicPath = "focus_kitchen/global_room_v5";
-    const packetHeader = String.fromCharCode(0x30, payloadString.length + topicPath.length + 2, 0x00, topicPath.length) + topicPath;
-    
-    nativeSocket.send(packetHeader + payloadString);
-    msgInput.value = "";
+    // Use a standard secure background network request to instantly beam message out
+    fetch(BROADCAST_PUBLISH_URL, {
+        method: 'POST',
+        body: JSON.stringify(bodyPayload)
+    })
+    .then(() => {
+        msgInput.value = "";
+    })
+    .catch(err => console.log("Network drop out:", err));
 }
 
-// 🧹 ABSOLUTE CLEANUP RESET
+// 🧹 INITIAL CLEAR UP ON PAGE RELOAD
 const nameField = document.getElementById('chat-user-name');
 const msgField = document.getElementById('chat-user-message');
 const streamField = document.getElementById('chat-messages-stream');
