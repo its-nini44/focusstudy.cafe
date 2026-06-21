@@ -218,3 +218,15 @@ function executeSendMessageAction() {
         }, 500);
     }, 600000); 
 }
+// ========================================================
+// 🧹 PAGE REFRESH WIPE CLEAN UP
+// ========================================================
+window.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.getElementById('chat-user-name');
+    const msgInput = document.getElementById('chat-user-message');
+    const streamEl = document.getElementById('chat-messages-stream');
+
+    if (nameInput) nameInput.value = "";
+    if (msgInput) msgInput.value = "";
+    if (streamEl) streamEl.innerHTML = "";
+});
