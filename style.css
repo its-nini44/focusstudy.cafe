@@ -17,7 +17,7 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 10000;
+    z-index: 1000;
 }
 
 #game-widgets {
@@ -117,15 +117,36 @@ button:hover { background-color: #cc8e35; }
 .food-card { background: #f1f2f6; border: 3px solid #ced6e0; border-radius: 8px; padding: 4px; cursor: pointer; width: 100px; text-align: center; box-sizing: border-box; font-size: 0.8rem;}
 .food-card img { display: block; margin: 0 auto 3px auto; width: 50px; height: 50px; object-fit: cover;}
 .food-card.selected { border-color: #ffb142; background: #ffeaa7; box-shadow: 0 0 8px rgba(255, 177, 66, 0.5); }
-#start-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-.start-card { text-align: center; background: rgba(255, 255, 255, 0.85); padding: 30px 50px; border-radius: 15px; border: 4px solid #e17055; margin-bottom: 120px; }
-.hidden { display: none !important; }
-.hidden-modal { display: none !important; }
 
-/* 💬 COMPACT CHAT PANEL BOX INTERFACE STYLES */
+/* SAFARI PATCH: Complete physical layer removal on hidden state */
+#start-screen { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh; 
+    background: rgba(0,0,0,0.4); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 9999; 
+    pointer-events: auto;
+}
+#start-screen.hidden {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.start-card { text-align: center; background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px; border: 4px solid #e17055; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+
+.hidden { display: none !important; visibility: hidden !important; }
+.hidden-modal { display: none !important; pointer-events: none !important; }
+
+/* CHAT PANEL VISUAL CONFIGS */
 .chat-panel-box {
     width: 320px;
-    background: rgba(44, 62, 80, 0.95);
+    background: rgba(44, 62, 80, 0.98);
     border-radius: 10px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
     height: 100%;
@@ -133,7 +154,6 @@ button:hover { background-color: #cc8e35; }
     flex-direction: column;
     box-sizing: border-box;
     border: 3px solid #ffb142;
-    transition: all 0.2s ease-in-out;
 }
 
 .hidden-chat {
@@ -181,42 +201,42 @@ button:hover { background-color: #cc8e35; }
 }
 
 .chat-inputs-form input {
-    background: #fff;
-    border: 2px solid transparent;
-    padding: 8px 10px;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 100%;
-    box-sizing: border-box;
-    color: #2c3e50;
-    outline: none;
-    transition: border-color 0.2s;
+    background: #ffffff !important;
+    border: 2px solid transparent !important;
+    padding: 8px 10px !important;
+    border-radius: 4px !important;
+    font-family: inherit !important;
+    font-size: 0.85rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    color: #2c3e50 !important;
+    outline: none !important;
+    -webkit-appearance: none; /* Strip core iOS Safari default shadows */
 }
 
 .chat-inputs-form input:focus {
-    border-color: #ffb142;
+    border-color: #ffb142 !important;
 }
 
 #chat-user-name { 
-    width: 60%;
+    width: 60% !important;
     font-weight: bold; 
 }
 
 #chat-send-btn { 
-    background: #ffb142; 
-    color: #222f3e; 
-    padding: 8px; 
-    font-size: 0.85rem; 
-    border-radius: 4px; 
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: bold;
-    width: 100%;
-    box-sizing: border-box;
+    background: #ffb142 !important; 
+    color: #222f3e !important; 
+    padding: 8px !important; 
+    font-size: 0.85rem !important; 
+    border-radius: 4px !important; 
+    border: none !important;
+    cursor: pointer !important;
+    font-family: inherit !important;
+    font-weight: bold !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
-#chat-send-btn:hover { background: #cc8e35; }
+#chat-send-btn:hover { background: #cc8e35 !important; }
 
 #ending-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 20000; }
 .end-card-box { background: #fff; text-align: center; padding: 30px; width: 420px; border-radius: 16px; border: 5px solid #9b59b6; box-shadow: 0px 12px 40px rgba(0, 0, 0, 0.6); }
@@ -231,4 +251,3 @@ button:hover { background-color: #cc8e35; }
     .container, .chat-panel-box { width: 100%; max-width: 100%; height: auto; }
     .chat-panel-box { height: 350px; }
 }
-
