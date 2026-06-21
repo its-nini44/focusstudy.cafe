@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Kitchen</title>
-    <link rel="stylesheet" href="style.css?v=safari_patch">
+    <!-- Force browser layout cache updates -->
+    <link rel="stylesheet" href="style.css?v=final_prod">
+    <!-- Secure, Zero-Config Global Messaging Engine SDK -->
+    <script src="https://pubnub.com"></script>
 </head>
 <body>
 
-    <!-- BACKGROUND AUDIO -->
+    <!-- 🎵 BACKGROUND AUDIO -->
     <audio id="ambient-sound" src="focus.mp3" loop></audio>
 
-    <!-- TOP BAR NAVIGATION WIDGETS -->
+    <!-- 🌐 TOP BAR NAVIGATION WIDGETS -->
     <div id="top-ui-container" class="hidden">
         <div id="game-widgets">
             <div class="ui-widget" id="total-study-widget">⏱️ Total Focused: <span id="total-hours">0.0</span> hrs</div>
@@ -19,7 +22,7 @@
         </div>
     </div>
 
-    <!-- SCREEN 1: GAME START TITLE SCREEN -->
+    <!-- 🎬 SCREEN 1: GAME START TITLE SCREEN -->
     <div id="start-screen">
         <div class="start-card" id="intro-card">
             <p style="font-size: 1.5rem; margin: 0 0 20px 0; font-weight: bold; color: #d9a044; font-family: 'Courier New', monospace;">Welcome to Focus Kitchen!</p>
@@ -27,7 +30,7 @@
         </div>
     </div>
 
-    <!-- SCREEN 2: MAIN APP SCREEN -->
+    <!-- ⏱️ SCREEN 2: MAIN APP SCREEN -->
     <div id="app-screen" class="hidden">
         <div class="workspace-wrapper">
             
@@ -101,7 +104,7 @@
         </div>
     </div>
 
-    <!-- SCREEN 3: ENDING MODAL -->
+    <!-- 🏆 SCREEN 3: ENDING MODAL -->
     <div id="ending-screen" class="hidden-modal">
         <div class="end-card-box">
             <img src="Victory2.jpg" alt="Victory Banner" style="width: 100%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 12px;">
@@ -115,10 +118,7 @@
         </div>
     </div>
 
-    <script src="script.js?v=safari_patch"></script>
+    <!-- Force script execution track update -->
+    <script src="script.js?v=final_prod"></script>
 </body>
 </html>
-
-
-
-
