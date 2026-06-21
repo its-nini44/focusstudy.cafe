@@ -166,8 +166,14 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 💬 FIXED REAL-TIME SERVER-SENT EVENTS MULTI-USER CHAT
+// 💬 SECURE PRIVATE MULTI-USER CHAT ENGINE (SUPABASE REALTIME)
 // ========================================================
+const SUPABASE_URL = "https://cvsfpvxpntpporcolvsi.supabase.co"; 
+const SUPABASE_ANON_KEY = "PASTE_YOUR_COPIED_ANON_PUBLIC_KEY_HERE"; 
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const chatChannel = supabaseClient.channel('focus_kitchen_room');
+
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
 const chatPanel = document.getElementById('kitchen-chat-box');
 
@@ -182,48 +188,27 @@ const sendBtn = document.getElementById('chat-send-btn');
 const msgInput = document.getElementById('chat-user-message');
 const streamEl = document.getElementById('chat-messages-stream');
 
-// Distinct path string to keep separate app traffic from mixing
-const NTFY_ROOM_ID = "focus_kitchen_secure_stream_887";
-const SUBSCRIBE_URL = `https://ntfy.sh{NTFY_ROOM_ID}/sse`;
-const PUBLISH_URL = `https://ntfy.sh{NTFY_ROOM_ID}`;
+// Listen for text events flying through your private broadcast channel
+chatChannel
+  .on('broadcast', { event: 'user-msg' }, ({ payload }) => {
+      if (!streamEl || !payload.username || !payload.message) return;
 
-// Create network event stream connection
-const liveStream = new EventSource(SUBSCRIBE_URL);
-
-// Listen to incoming data streaming across the internet
-liveStream.addEventListener('message', function(event) {
-    if (!streamEl) return;
-    
-    try {
-        const serverPacket = JSON.parse(event.data);
-        
-        // Fix: Only build a bubble if the event is a user text message
-        if (serverPacket.event !== "message") return; 
-
-        // Decode the string package
-        const chatData = JSON.parse(serverPacket.message);
-        
-        if (!chatData.username || !chatData.message) return;
-
-        const bubble = document.createElement('div');
-        bubble.className = "chat-bubble-row";
-        bubble.innerHTML = `<strong>${chatData.username}:</strong> ${chatData.message}`;
-        
-        streamEl.appendChild(bubble);
-        
-        // Snap scroll down to view incoming text layout safely
-        setTimeout(function() {
-            streamEl.scrollTop = streamEl.scrollHeight;
-        }, 15);
-    } catch (err) {
-        // Suppress unexpected background formatting packets cleanly
-    }
-});
+      const bubble = document.createElement('div');
+      bubble.className = "chat-bubble-row";
+      bubble.innerHTML = `<strong>${payload.username}:</strong> ${payload.message}`;
+      
+      streamEl.appendChild(bubble);
+      
+      setTimeout(() => {
+          streamEl.scrollTop = streamEl.scrollHeight;
+      }, 15);
+  })
+  .subscribe();
 
 if (sendBtn) {
     sendBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        sendLiveChatMessage();
+        transmitMessageToSupabase();
     });
 }
 
@@ -231,12 +216,12 @@ if (msgInput) {
     msgInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            sendLiveChatMessage();
+            transmitMessageToSupabase();
         }
     });
 }
 
-function sendLiveChatMessage() {
+function transmitMessageToSupabase() {
     const nameInput = document.getElementById('chat-user-name');
     const msgInput = document.getElementById('chat-user-message');
     
@@ -247,20 +232,14 @@ function sendLiveChatMessage() {
 
     if (!messageText) return; 
 
-    const chatPayload = {
-        username: chefName,
-        message: messageText
-    };
+    // Instantly send data down your private secure line
+    chatChannel.send({
+        type: 'broadcast',
+        event: 'user-msg',
+        payload: { username: chefName, message: messageText }
+    });
 
-    // Push inputs down the network pipeline to all active tabs
-    fetch(PUBLISH_URL, {
-        method: 'POST',
-        body: JSON.stringify(chatPayload)
-    })
-    .then(() => {
-        msgInput.value = "";
-    })
-    .catch(err => console.log("Network message push failure:", err));
+    msgInput.value = "";
 }
 
 // 🧹 INITIAL REFRESH SCREEN TOTAL WIPE
