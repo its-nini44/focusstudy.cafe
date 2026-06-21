@@ -118,7 +118,7 @@ button:hover { background-color: #cc8e35; }
 .food-card img { display: block; margin: 0 auto 3px auto; width: 50px; height: 50px; object-fit: cover;}
 .food-card.selected { border-color: #ffb142; background: #ffeaa7; box-shadow: 0 0 8px rgba(255, 177, 66, 0.5); }
 
-/* SAFARI POSITION FIX: Total layer isolation */
+/* SAFARI POSITION LAYER PATCH */
 #start-screen { 
     position: fixed; 
     top: 0; 
@@ -143,7 +143,7 @@ button:hover { background-color: #cc8e35; }
 .hidden { display: none !important; visibility: hidden !important; }
 .hidden-modal { display: none !important; pointer-events: none !important; }
 
-/* CHAT BOX CONTAINER STYLES */
+/* CHAT PANEL VISUAL CONTAINER STYLES */
 .chat-panel-box {
     width: 320px;
     background: rgba(44, 62, 80, 0.98);
@@ -251,3 +251,4 @@ button:hover { background-color: #cc8e35; }
     .container, .chat-panel-box { width: 100%; max-width: 100%; height: auto; }
     .chat-panel-box { height: 350px; }
 }
+
