@@ -166,7 +166,7 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 💬 STABLE SERVER-SENT EVENTS INSTANT CHAT (NTFY POWERED)
+// 💬 FIXED REAL-TIME SERVER-SENT EVENTS MULTI-USER CHAT
 // ========================================================
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
 const chatPanel = document.getElementById('kitchen-chat-box');
@@ -182,43 +182,48 @@ const sendBtn = document.getElementById('chat-send-btn');
 const msgInput = document.getElementById('chat-user-message');
 const streamEl = document.getElementById('chat-messages-stream');
 
-// Secure public communication frequency string
-const NTFY_TOPIC_ROOM = "focus_kitchen_stream_channel_999";
-const STREAM_SUBSCRIBE_URL = `https://ntfy.sh{NTFY_TOPIC_ROOM}/sse`;
-const BROADCAST_PUBLISH_URL = `https://ntfy.sh{NTFY_TOPIC_ROOM}`;
+// Distinct path string to keep separate app traffic from mixing
+const NTFY_ROOM_ID = "focus_kitchen_secure_stream_887";
+const SUBSCRIBE_URL = `https://ntfy.sh{NTFY_ROOM_ID}/sse`;
+const PUBLISH_URL = `https://ntfy.sh{NTFY_ROOM_ID}`;
 
-// Initialize native browser background stream listener
-const networkStreamReader = new EventSource(STREAM_SUBSCRIBE_URL);
+// Create network event stream connection
+const liveStream = new EventSource(SUBSCRIBE_URL);
 
-networkStreamReader.onmessage = function(event) {
+// Listen to incoming data streaming across the internet
+liveStream.addEventListener('message', function(event) {
     if (!streamEl) return;
     
     try {
-        const payloadData = JSON.parse(event.data);
-        // The message string is sent as the core text property of the packet
-        const messagePayload = JSON.parse(payloadData.message);
+        const serverPacket = JSON.parse(event.data);
+        
+        // Fix: Only build a bubble if the event is a user text message
+        if (serverPacket.event !== "message") return; 
 
-        if (!messagePayload.username || !messagePayload.message) return;
+        // Decode the string package
+        const chatData = JSON.parse(serverPacket.message);
+        
+        if (!chatData.username || !chatData.message) return;
 
         const bubble = document.createElement('div');
         bubble.className = "chat-bubble-row";
-        bubble.innerHTML = `<strong>${messagePayload.username}:</strong> ${messagePayload.message}`;
+        bubble.innerHTML = `<strong>${chatData.username}:</strong> ${chatData.message}`;
         
         streamEl.appendChild(bubble);
         
-        // Instant layout adjustment alignment
+        // Snap scroll down to view incoming text layout safely
         setTimeout(function() {
             streamEl.scrollTop = streamEl.scrollHeight;
-        }, 10);
+        }, 15);
     } catch (err) {
-        // Soft catch for system test packets sent by server on connection start
+        // Suppress unexpected background formatting packets cleanly
     }
-};
+});
 
 if (sendBtn) {
     sendBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        transmitInstantMessage();
+        sendLiveChatMessage();
     });
 }
 
@@ -226,12 +231,12 @@ if (msgInput) {
     msgInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            transmitInstantMessage();
+            sendLiveChatMessage();
         }
     });
 }
 
-function transmitInstantMessage() {
+function sendLiveChatMessage() {
     const nameInput = document.getElementById('chat-user-name');
     const msgInput = document.getElementById('chat-user-message');
     
@@ -242,27 +247,29 @@ function transmitInstantMessage() {
 
     if (!messageText) return; 
 
-    const bodyPayload = {
+    const chatPayload = {
         username: chefName,
         message: messageText
     };
 
-    // Use a standard secure background network request to instantly beam message out
-    fetch(BROADCAST_PUBLISH_URL, {
+    // Push inputs down the network pipeline to all active tabs
+    fetch(PUBLISH_URL, {
         method: 'POST',
-        body: JSON.stringify(bodyPayload)
+        body: JSON.stringify(chatPayload)
     })
     .then(() => {
         msgInput.value = "";
     })
-    .catch(err => console.log("Network drop out:", err));
+    .catch(err => console.log("Network message push failure:", err));
 }
 
-// 🧹 INITIAL CLEAR UP ON PAGE RELOAD
-const nameField = document.getElementById('chat-user-name');
-const msgField = document.getElementById('chat-user-message');
-const streamField = document.getElementById('chat-messages-stream');
+// 🧹 INITIAL REFRESH SCREEN TOTAL WIPE
+window.addEventListener('DOMContentLoaded', function() {
+    const nameField = document.getElementById('chat-user-name');
+    const msgField = document.getElementById('chat-user-message');
+    const streamField = document.getElementById('chat-messages-stream');
 
-if (nameField) nameField.value = "";
-if (msgField) msgField.value = "";
-if (streamField) streamField.innerHTML = "";
+    if (nameField) nameField.value = "";
+    if (msgField) msgField.value = "";
+    if (streamField) streamField.innerHTML = "";
+});
