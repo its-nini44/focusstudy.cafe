@@ -4,31 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Kitchen</title>
-    <!-- Force browser layout cache updates -->
-    <link rel="stylesheet" href="style.css?v=small_chat">
+    <link rel="stylesheet" href="style.css?v=safari_patch">
 </head>
 <body>
 
-    <!-- 🎵 BACKGROUND AUDIO -->
+    <!-- BACKGROUND AUDIO -->
     <audio id="ambient-sound" src="focus.mp3" loop></audio>
 
-    <!-- 🌐 TOP BAR NAVIGATION WIDGETS -->
-    <div id="top-ui-container">
-        <div id="game-widgets" class="hidden">
+    <!-- TOP BAR NAVIGATION WIDGETS -->
+    <div id="top-ui-container" class="hidden">
+        <div id="game-widgets">
             <div class="ui-widget" id="total-study-widget">⏱️ Total Focused: <span id="total-hours">0.0</span> hrs</div>
             <button id="toggle-chat-btn" class="ui-widget-btn">💬 Chat</button>
         </div>
     </div>
 
-    <!-- 🎬 SCREEN 1: GAME START TITLE SCREEN -->
+    <!-- SCREEN 1: GAME START TITLE SCREEN -->
     <div id="start-screen">
         <div class="start-card" id="intro-card">
-            <p style="font-size: 1.5rem; margin: 0; font-weight: bold; color: #d9a044; font-family: 'Courier New', monospace;">Welcome to Focus Kitchen!</p>
-            <button id="begin-btn" style="font-size: 1.5rem; padding: 20px 40px;">Press to Begin</button>
+            <p style="font-size: 1.5rem; margin: 0 0 20px 0; font-weight: bold; color: #d9a044; font-family: 'Courier New', monospace;">Welcome to Focus Kitchen!</p>
+            <button type="button" id="begin-btn" style="font-size: 1.5rem; padding: 20px 40px; cursor: pointer;">Press to Begin</button>
         </div>
     </div>
 
-    <!-- ⏱️ SCREEN 2: MAIN APP SCREEN -->
+    <!-- SCREEN 2: MAIN APP SCREEN -->
     <div id="app-screen" class="hidden">
         <div class="workspace-wrapper">
             
@@ -40,35 +39,35 @@
                 
                 <div class="food-menu">
                     <div class="food-card selected" data-mins="15" data-name="Masala Chai">
-                        <img src="Chai.png" alt="Chai" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
+                        <img src="Chai.png" alt="Chai">
                         <p>Masala Chai<br>(15 Mins)</p>
                     </div>
                     <div class="food-card" data-mins="30" data-name="Soft Idli">
-                        <img src="Idli.jpeg" alt="Idli" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <img src="Idli.jpeg" alt="Idli">
                         <p>Idli<br>(30 Mins)</p>
                     </div>
                     <div class="food-card" data-mins="45" data-name="Garlic Naan">
-                        <img src="Naan.jpg" alt="Naan" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <img src="Naan.jpg" alt="Naan">
                         <p>Garlic Naan<br>(45 Mins)</p>
                     </div>
                     <div class="food-card" data-mins="50" data-name="Masala Dosa">
-                        <img src="Dosa.jpg" alt="Dosa" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <img src="Dosa.jpg" alt="Dosa">
                         <p>Masala Dosa<br>(50 Mins)</p>
                     </div>
                     <div class="food-card" data-mins="60" data-name="Gulab Jamun">
-                        <img src="Sweets.jpg" alt="Sweets" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <img src="Sweets.jpg" alt="Sweets">
                         <p>Sweets<br>(60 Mins)</p>
                     </div>
                     <div class="food-card" data-mins="75" data-name="Crispy Samosa">
-                        <img src="samosa.jpg" alt="Samosa" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px auto;">
+                        <img src="samosa.jpg" alt="Samosa">
                         <p>Samosa<br>(75 Mins)</p>
                     </div>
                     <div class="food-card" data-mins="90" data-name="Palak Paneer">
-                        <img src="Paneer.jpg" alt="Paneer" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <img src="Paneer.jpg" alt="Paneer">
                         <p>Palak Paneer<br>(90 Mins)</p>
                     </div>
                     <div class="food-card" data-mins="120" data-name="Royal Biryani">
-                        <img src="Biryani.png" alt="Biryani" style="width: 64px; height: 64px; display: block; margin: 0 auto 5px auto;">
+                        <img src="Biryani.png" alt="Biryani">
                         <p>Biryani<br>(120 Mins)</p>
                     </div>
                 </div>
@@ -83,26 +82,26 @@
 
                 <br><br>
                 <div class="control-buttons">
-                    <button id="start-btn">Start Cooking & Studying</button>
-                    <button id="pause-btn" class="hidden-control">⏸️ Pause Timer</button>
+                    <button type="button" id="start-btn">Start Cooking & Studying</button>
+                    <button type="button" id="pause-btn" class="hidden-control">⏸️ Pause Timer</button>
                 </div>
             </div>
 
-            <!-- CHAT PANEL (Starts Hidden via class) -->
-            <div class="chat-panel-box hidden-chat">
+            <!-- CHAT PANEL -->
+            <div id="kitchen-chat-box" class="chat-panel-box hidden-chat">
                 <div class="chat-header-title">💬 Kitchen Chat Room</div>
                 <div id="chat-messages-stream"></div>
                 <div class="chat-inputs-form">
                     <input type="text" id="chat-user-name" placeholder="Chef Name..." maxlength="12">
                     <input type="text" id="chat-user-message" placeholder="Type a message..." maxlength="100">
-                    <button id="chat-send-btn">Send</button>
+                    <button type="button" id="chat-send-btn">Send</button>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- 🏆 SCREEN 3: ENDING MODAL -->
+    <!-- SCREEN 3: ENDING MODAL -->
     <div id="ending-screen" class="hidden-modal">
         <div class="end-card-box">
             <img src="Victory2.jpg" alt="Victory Banner" style="width: 100%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 12px;">
@@ -112,12 +111,11 @@
                 <small>Session Credit:</small>
                 <div id="added-time-text">+15 Mins Logged</div>
             </div>
-            <button id="close-end-btn">Continue Cooking 🍳</button>
+            <button type="button" id="close-end-btn">Continue Cooking 🍳</button>
         </div>
     </div>
 
-    <!-- Force script execution track update -->
-    <script src="script.js?v=small_chat"></script>
+    <script src="script.js?v=safari_patch"></script>
 </body>
 </html>
 
