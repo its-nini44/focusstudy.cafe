@@ -166,7 +166,7 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 🌐 FAST SYNC MULTI-USER CHAT ENGINE (WIPES ON REFRESH)
+// 💬 HIGH-SPEED SERVERLESS GLOBAL CHAT (PUBNUB BACKED)
 // ========================================================
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
 const chatPanel = document.getElementById('kitchen-chat-box');
@@ -182,29 +182,58 @@ const sendBtn = document.getElementById('chat-send-btn');
 const msgInput = document.getElementById('chat-user-message');
 const streamEl = document.getElementById('chat-messages-stream');
 
-// Generates a random session key every load so refresh explicitly cleans chat history
-const UNIQUE_ROOM_ID = "focus_kitchen_session_" + Math.random().toString(36).substring(2, 9); 
-const PUBLIC_API_URL = `https://restful-api.dev`;
+const FOCUS_KITCHEN_CHANNEL = "focus_kitchen_global_stream_v100";
 
-let loadedMessageIds = new Set();
+// Initialize free, zero-config global production broadcast network keys
+const messagingNetwork = new PubNub({
+    publishKey: "pub-c-cb99df8a-0205-4fbb-a1a6-068305f6a9e1",
+    subscribeKey: "sub-c-5f807f43-a6e5-47d5-866d-a60d8bbec5a6",
+    userId: "chef_" + Math.random().toString(36).substring(2, 9)
+});
+
+// Catch incoming data packets from other players instantly
+messagingNetwork.addListener({
+    message: function(packet) {
+        if (!streamEl) return;
+
+        const data = packet.message;
+        
+        // Append text message bubble row
+        const bubble = document.createElement('div');
+        bubble.className = "chat-bubble-row";
+        bubble.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+        
+        streamEl.appendChild(bubble);
+        
+        // Safari layout render scroll patch
+        setTimeout(function() {
+            streamEl.scrollTop = streamEl.scrollHeight;
+        }, 10);
+    }
+});
+
+// Connect to the internet live stream channel
+messagingNetwork.subscribe({
+    channels: [FOCUS_KITCHEN_CHANNEL]
+});
 
 if (sendBtn) {
-    sendBtn.onclick = function(e) {
+    sendBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        sendPublicChatMessage();
-    };
+        broadcastKitchenMessage();
+    });
 }
 
 if (msgInput) {
-    msgInput.onkeydown = function(e) {
+    msgInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            sendPublicChatMessage();
+            broadcastKitchenMessage();
         }
-    };
+    });
 }
 
-function sendPublicChatMessage() {
+function broadcastKitchenMessage() {
     const nameInput = document.getElementById('chat-user-name');
     const msgInput = document.getElementById('chat-user-message');
     
@@ -215,72 +244,23 @@ function sendPublicChatMessage() {
 
     if (!messageText) return; 
 
-    const payload = {
-        name: UNIQUE_ROOM_ID,
-        data: {
+    // Send data over the global network
+    messagingNetwork.publish({
+        channel: FOCUS_KITCHEN_CHANNEL,
+        message: {
             username: chefName,
-            message: messageText,
-            sentAt: Date.now()
+            message: messageText
         }
-    };
+    }).catch(err => console.log("Transmission dropped:", err));
 
-    fetch(PUBLIC_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        msgInput.value = "";
-        fetchIncomingMessages(); 
-    })
-    .catch(err => console.log("Network broadcast error:", err));
+    msgInput.value = "";
 }
 
-function fetchIncomingMessages() {
-    if (!streamEl) return;
+// 🧹 INLINE PAGE LOADING HARD REFRESH CLEANUP
+const nameField = document.getElementById('chat-user-name');
+const msgField = document.getElementById('chat-user-message');
+const streamField = document.getElementById('chat-messages-stream');
 
-    fetch(PUBLIC_API_URL)
-    .then(res => res.json())
-    .then(data => {
-        if (!Array.isArray(data)) return;
-
-        const roomMessages = data.filter(item => item.name === UNIQUE_ROOM_ID && item.data);
-        roomMessages.sort((a, b) => (a.data.sentAt || 0) - (b.data.sentAt || 0));
-
-        roomMessages.forEach(item => {
-            if (!loadedMessageIds.has(item.id)) {
-                loadedMessageIds.add(item.id);
-
-                const bubble = document.createElement('div');
-                bubble.className = "chat-bubble-row";
-                bubble.innerHTML = `<strong>${item.data.username}:</strong> ${item.data.message}`;
-                
-                streamEl.appendChild(bubble);
-                
-                setTimeout(function() {
-                    streamEl.scrollTop = streamEl.scrollHeight;
-                }, 10);
-
-                // ⏳ 10-Minute self removal queue
-                setTimeout(function() {
-                    bubble.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
-                    bubble.style.opacity = "0";
-                    bubble.style.transform = "scale(0.95)";
-                    setTimeout(() => bubble.remove(), 500);
-                }, 600000);
-            }
-        });
-    })
-    .catch(err => console.log("Data sync issue:", err));
-}
-
-// 🔄 ULTRA FAST REFRESH LOOP: Fetch updates every 500 milliseconds (0.5s)
-setInterval(fetchIncomingMessages, 500);
-
-// 🧹 PHYSICAL RESET WINDOW INITIALIZER
-window.onload = function() {
-    const nameInput = document.getElementById('chat-user-name');
-    const msgInput = document.getElementById('chat-user-message');
-    const streamEl = document.getElementById('chat-messages-stream');
-
-    if (nameInput) nameInput.value = "";
+if (nameField) nameField.value = "";
+if (msgField) msgField.value = "";
+if (streamField) streamField.innerHTML = "";
