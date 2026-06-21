@@ -18,22 +18,19 @@ if (volumeSlider && ambientAudio) {
 }
 
 // ========================================================
-// 🎬 WINDOW SWAPS
+// WINDOW SWAPS
 // ========================================================
-const introCard = document.getElementById('intro-card');
-if (introCard) {
-    introCard.classList.remove('hidden');
-}
-
-document.getElementById('begin-btn').addEventListener('click', function() {
+document.getElementById('begin-btn').addEventListener('click', function(e) {
+    e.preventDefault();
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('app-screen').classList.remove('hidden');
+    document.getElementById('top-ui-container').classList.remove('hidden');
     document.getElementById('game-widgets').classList.remove('hidden');
     updateTotalTimeWidget();
 });
 
 // ========================================================
-// 🎚️ RECIPE GRIDS
+// RECIPE GRIDS
 // ========================================================
 let countdownInterval = null;
 let selectedMinutes = 15; 
@@ -53,7 +50,7 @@ document.querySelectorAll('.food-card').forEach(card => {
 });
 
 // ========================================================
-// 🛡️ TIMER ENGINES
+// TIMER ENGINES
 // ========================================================
 let targetEndTime; 
 let totalSecondsTracked; 
@@ -169,32 +166,32 @@ document.getElementById('close-end-btn').addEventListener('click', function() {
 });
 
 // ========================================================
-// 💬 CHAT TOGGLE INTERACTION & FIXED LOGIC
+// SAFARI COMPLIANT CHAT LOGIC
 // ========================================================
 const toggleChatBtn = document.getElementById('toggle-chat-btn');
-const chatPanel = document.querySelector('.chat-panel-box');
+const chatPanel = document.getElementById('kitchen-chat-box');
 
 if (toggleChatBtn && chatPanel) {
-    toggleChatBtn.addEventListener('click', function() {
+    toggleChatBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         chatPanel.classList.toggle('hidden-chat');
     });
 }
 
 const sendBtn = document.getElementById('chat-send-btn');
-const streamEl = document.getElementById('chat-messages-stream');
 const msgInput = document.getElementById('chat-user-message');
 
-if (sendBtn && streamEl) {
+if (sendBtn) {
     sendBtn.addEventListener('click', function(e) {
-        e.preventDefault(); 
+        e.preventDefault();
         executeSendMessageAction();
     });
 }
 
 if (msgInput) {
-    msgInput.addEventListener('keypress', function(e) {
+    msgInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
-            e.preventDefault(); 
+            e.preventDefault();
             executeSendMessageAction();
         }
     });
@@ -207,10 +204,9 @@ function executeSendMessageAction() {
     
     if (!msgInput || !streamEl) return;
 
-    let chefName = nameInput ? nameInput.value.trim() : "Anonymous Chef";
-    if (!chefName) chefName = "Anonymous Chef";
-    
+    let chefName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Anonymous Chef";
     let messageText = msgInput.value.trim();
+
     if (!messageText) return; 
 
     const bubble = document.createElement('div');
@@ -218,11 +214,15 @@ function executeSendMessageAction() {
     bubble.innerHTML = `<strong>${chefName}:</strong> ${messageText}`;
     
     streamEl.appendChild(bubble);
-    streamEl.scrollTop = streamEl.scrollHeight;
+    
+    // Explicit wrapper scroll anchor for Safari thread engine
+    setTimeout(function() {
+        streamEl.scrollTop = streamEl.scrollHeight;
+    }, 10);
     
     msgInput.value = "";
 
-    // ⏳ 10-Minute Wipe out queue
+    // ⏳ 10-Minute Wipe out
     setTimeout(function() {
         bubble.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
         bubble.style.opacity = "0";
@@ -234,15 +234,11 @@ function executeSendMessageAction() {
     }, 600000); 
 }
 
-// ========================================================
-// 🧹 PAGE REFRESH WIPE CLEAN UP
-// ========================================================
-window.addEventListener('DOMContentLoaded', function() {
-    const nameInput = document.getElementById('chat-user-name');
-    const msgInput = document.getElementById('chat-user-message');
-    const streamEl = document.getElementById('chat-messages-stream');
+// 🧹 INLINE WIPE CLEANUP
+const nameField = document.getElementById('chat-user-name');
+const msgField = document.getElementById('chat-user-message');
+const streamField = document.getElementById('chat-messages-stream');
 
-    if (nameInput) nameInput.value = "";
-    if (msgInput) msgInput.value = "";
-    if (streamEl) streamEl.innerHTML = "";
-});
+if (nameField) nameField.value = "";
+if (msgField) msgField.value = "";
+if (streamField) streamField.innerHTML = "";
